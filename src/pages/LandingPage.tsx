@@ -1,86 +1,129 @@
 import React from 'react';
-import { ArrowRight, Activity, Layers, AlertTriangle } from 'lucide-react';
+import { ArrowRight, Clock, Layers, TrendingDown, Info } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface LandingPageProps {
     onStart: () => void;
 }
 
+const Section: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = "" }) => (
+    <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        viewport={{ once: true, margin: "-20%" }}
+        className={`min-h-screen flex flex-col items-center justify-center p-8 text-center ${className}`}
+    >
+        {children}
+    </motion.div>
+);
+
 export const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
     return (
-        <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4 relative overflow-hidden">
+        <div className="bg-background text-foreground overflow-x-hidden">
 
-            {/* Background decoration */}
-            <div className="absolute inset-0 z-0 opacity-5 pointer-events-none">
-                <div className="absolute top-0 left-0 w-full h-full bg-grid-slate-900/[0.04] dark:bg-grid-slate-400/[0.05]" />
+            {/* 1. Hero */}
+            <div className="relative min-h-screen flex flex-col items-center justify-center p-4">
+                {/* Abstract Background Gradient */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                    <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[128px]" />
+                    <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[128px]" />
+                    <div className="absolute top-0 left-0 w-full h-full bg-grid-slate-900/[0.04] dark:bg-grid-slate-400/[0.03]" />
+                </div>
+
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 1 }}
+                    className="z-10 flex flex-col items-center gap-6 max-w-4xl"
+                >
+                    <span className="px-4 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-sm font-medium tracking-wider uppercase animate-pulse">
+                        Hackonomics 2026
+                    </span>
+                    <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-balance">
+                        The <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">Borrowed</span> Economy
+                    </h1>
+                    <p className="text-xl md:text-2xl text-muted-foreground/80 max-w-2xl text-balance leading-relaxed">
+                        Every transaction is a promise. Every promise is a risk.<br />
+                        See what happens when the promises stop being kept.
+                    </p>
+
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1.5, duration: 1 }}
+                        className="absolute bottom-10 animate-bounce text-muted-foreground"
+                    >
+                        <span className="text-xs uppercase tracking-widest">Scroll to breakdown</span>
+                        <TrendingDown className="mx-auto mt-2 w-5 h-5 opacity-50" />
+                    </motion.div>
+                </motion.div>
             </div>
 
-            <div className="z-10 max-w-4xl w-full flex flex-col items-center text-center space-y-8">
+            {/* 2. Theory: The Layers */}
+            <Section className="bg-slate-950/50">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mb-8 shadow-2xl shadow-blue-500/20">
+                    <Layers className="text-white w-8 h-8" />
+                </div>
+                <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">The Chain of Promises</h2>
+                <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">
+                    In a modern economy, payments are rarely immediate.
+                    <span className="block mt-4 text-foreground font-semibold">
+                        Consumers pay with Credit Cards.<br />
+                        Retailers pay with Net-30 Invoices.<br />
+                        Wholesalers pay with Commercial Paper.
+                    </span>
+                </p>
+                <div className="mt-12 flex flex-col md:flex-row gap-4 opacity-75">
+                    {['Consumer', 'Retailer', 'Wholesaler', 'Manufacturer'].map((item, i) => (
+                        <div key={item} className="flex items-center gap-2">
+                            <div className="px-6 py-3 rounded-lg border bg-slate-900 border-slate-800 text-slate-300 font-mono text-sm">
+                                {item}
+                            </div>
+                            {i < 3 && <ArrowRight className="text-slate-600 w-4 h-4" />}
+                        </div>
+                    ))}
+                </div>
+            </Section>
 
-                {/* Header */}
-                <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                    <div className="flex items-center justify-center gap-2 text-primary font-bold tracking-wider uppercase text-sm">
-                        <Activity size={16} /> Hackonomics 2026 Project
-                    </div>
-                    <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-balance">
-                        We Live in a <br />
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
-                            Borrowed World
-                        </span>
-                    </h1>
-                    <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto text-balance">
-                        Modern economies run on deferred payments. See how a single delay can cascade through the system and trigger a collapse.
+            {/* 3. Theory: The Delay */}
+            <Section>
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center mb-8 shadow-2xl shadow-amber-500/20">
+                    <Clock className="text-white w-8 h-8" />
+                </div>
+                <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">Time is Risk</h2>
+                <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">
+                    Every layer operates on the <em>assumption</em> that future money is as good as present money.
+                    But when a payment is delayed at the bottom, the liquidity void travels up... fast.
+                </p>
+                <div className="mt-8 p-6 rounded-xl bg-amber-500/5 border border-amber-500/20 text-amber-400 max-w-lg text-left">
+                    <h4 className="font-bold flex items-center gap-2 mb-2"><Info size={16} /> The Insight</h4>
+                    <p className="text-sm opacity-90">
+                        Economic collapse doesn't always come from a loss of value.
+                        Often, it comes from a **loss of synchronization**. If everyone delays by 1 day, the system halts.
                     </p>
                 </div>
+            </Section>
 
-                {/* Feature Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full text-left animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
-                    <div className="p-6 bg-card rounded-xl border shadow-sm hover:border-primary/50 transition-colors group">
-                        <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
-                            <Layers size={20} />
-                        </div>
-                        <h3 className="font-bold text-lg mb-2">Layered Economy</h3>
-                        <p className="text-sm text-muted-foreground">
-                            From consumers to manufacturers, everyone buys now and pays later.
-                        </p>
-                    </div>
+            {/* 4. CTA */}
+            <Section className="bg-gradient-to-b from-transparent to-blue-950/20 min-h-[70vh]">
+                <h2 className="text-5xl md:text-7xl font-bold mb-8">Do Not Trust. Verify.</h2>
+                <p className="text-xl text-muted-foreground mb-12 max-w-2xl">
+                    Run the simulation. Trigger a payment shock. Watch the economy freeze.
+                </p>
 
-                    <div className="p-6 bg-card rounded-xl border shadow-sm hover:border-primary/50 transition-colors group">
-                        <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center mb-4 text-amber-600 dark:text-amber-400 group-hover:scale-110 transition-transform">
-                            <Activity size={20} />
-                        </div>
-                        <h3 className="font-bold text-lg mb-2">Hidden Fragility</h3>
-                        <p className="text-sm text-muted-foreground">
-                            Liquidity buffers hide the risk until the moment they are breached.
-                        </p>
-                    </div>
+                <button
+                    onClick={onStart}
+                    className="group relative inline-flex items-center justify-center px-12 py-6 text-xl font-bold text-white transition-all duration-300 bg-blue-600 rounded-full hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 shadow-[0_0_40px_-10px_rgba(37,99,235,0.5)] hover:shadow-[0_0_60px_-15px_rgba(37,99,235,0.6)] hover:scale-105"
+                >
+                    Launch Simulator
+                    <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                </button>
+            </Section>
 
-                    <div className="p-6 bg-card rounded-xl border shadow-sm hover:border-primary/50 transition-colors group">
-                        <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center mb-4 text-red-600 dark:text-red-400 group-hover:scale-110 transition-transform">
-                            <AlertTriangle size={20} />
-                        </div>
-                        <h3 className="font-bold text-lg mb-2">Systemic Collapse</h3>
-                        <p className="text-sm text-muted-foreground">
-                            Watch how one delay creates a contagion that freezes the entire network.
-                        </p>
-                    </div>
-                </div>
-
-                {/* CTA */}
-                <div className="pt-8 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300">
-                    <button
-                        onClick={onStart}
-                        className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-primary rounded-full hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary shadow-lg hover:shadow-xl hover:-translate-y-1"
-                    >
-                        Start Simulation
-                        <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                </div>
-
-            </div>
-
-            <div className="absolute bottom-4 text-xs text-muted-foreground">
-                Built for Hackonomics &bull; Interactive Credit Network Model
-            </div>
+            <footer className="py-8 text-center text-xs text-muted-foreground border-t border-white/5">
+                <p>Built for Hackonomics 2026. A study in systemic fragility.</p>
+            </footer>
         </div>
     );
 };
