@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { SimulationPage } from './pages/SimulationPage';
+import { LandingPage } from './pages/LandingPage';
 
 function App() {
+  const [view, setView] = useState<'landing' | 'simulation'>('landing');
+
   return (
-    <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
-      <h1 className="text-4xl font-bold">Credit Chain Fragility Simulator</h1>
-    </div>
+    <>
+      {view === 'landing' ? (
+        <LandingPage onStart={() => setView('simulation')} />
+      ) : (
+        <SimulationPage />
+      )}
+    </>
   );
 }
 
