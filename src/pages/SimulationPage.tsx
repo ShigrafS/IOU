@@ -13,7 +13,7 @@ export const SimulationPage: React.FC = () => {
         const handleResize = () => {
             if (containerRef.current) {
                 const { width, height } = containerRef.current.getBoundingClientRect();
-                setDimensions({ width, height: height - 40 }); // Subtract padding
+                setDimensions({ width, height });
             }
         };
 
@@ -24,68 +24,53 @@ export const SimulationPage: React.FC = () => {
     }, []);
 
     return (
-        <div className="flex flex-col h-screen bg-background overflow-hidden relative">
-            {/* Header */}
-            <div className="flex-none p-4 border-b bg-card z-10">
-                <h1 className="text-xl font-bold tracking-tight">Credit Chain Fragility Simulator</h1>
-                <p className="text-sm text-muted-foreground">
-                    Visualize how deferred payments propagate through a credit-based economy.
-                </p>
+        <div className="relative w-screen h-screen bg-background overflow-hidden flex flex-col items-center justify-center">
+
+            {/* Background Decor */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.1),transparent_70%)] pointer-events-none" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none"></div>
+
+            {/* Main Graph Canvas */}
+            <div ref={containerRef} className="absolute inset-0 z-0">
+                {dimensions.width > 0 && (
+                    <LayeredGraph
+                        nodes={state.nodes}
+                        edges={state.edges}
+                        width={dimensions.width}
+                        height={dimensions.height}
+                        className="w-full h-full"
+                    />
+                )}
             </div>
 
-            {/* Main Content */}
-            <div className="flex flex-1 overflow-hidden">
-                {/* Controls Sidebar */}
-                <aside className="w-80 flex-none p-4 border-r bg-muted/30 overflow-y-auto z-10 flex flex-col gap-6">
-                    <SimulationControls
-                        isRunning={isRunning}
-                        onTogglePlay={() => setIsRunning(!isRunning)}
-                        onReset={reset}
-                        onToggleShock={toggleShock}
-                        shockActive={state.params.shockActive}
-                    />
-
-                    <MetricsDisplay
-                        totalObligations={state.totalObligations}
-                        unsettledObligations={state.unsettledObligations}
-                        failedNodes={state.failedNodes}
-                        tick={state.tick}
-                    />
-
-                    <div className="text-xs text-muted-foreground p-4 bg-card rounded border">
-                        <h4 className="font-semibold mb-1">How to use</h4>
-                        <ul className="list-disc pl-4 space-y-1">
-                            <li>Start the simulation to see transactions flow.</li>
-                            <li>Green edges are active payments.</li>
-                            <li>Red edges are delayed.</li>
-                            <li>Toggle "Liquidity Shock" to increase delays.</li>
-                            <li>Watch nodes turn red as they run out of cash.</li>
-                        </ul>
-                    </div>
-                </aside>
-
-                {/* Graph Area */}
-                <main className="flex-1 relative bg-slate-50 dark:bg-slate-950" ref={containerRef}>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                        {dimensions.width > 0 && (
-                            <LayeredGraph
-                                nodes={state.nodes}
-                                edges={state.edges}
-                                width={dimensions.width}
-                                height={dimensions.height}
-                            />
-                        )}
-                    </div>
-
-                    {/* Legend/Labels Overlay (Optional) */}
-                    <div className="absolute left-4 bottom-4 flex flex-col gap-2 pointer-events-none opacity-50">
-                        <div className="text-xs font-bold text-slate-500">MANUFACTURERS (Top)</div>
-                        <div className="text-xs font-bold text-slate-500">WHOLESALERS</div>
-                        <div className="text-xs font-bold text-slate-500">RETAILERS</div>
-                        <div className="text-xs font-bold text-slate-500">CONSUMERS (Bottom)</div>
-                    </div>
-                </main>
+            {/* Floating UI: Controls (Top Left) */}
+            <div className="absolute top-6 left-6 z-10 w-80">
+                <SimulationControls
+                    isRunning={isRunning}
+                    onTogglePlay={() => setIsRunning(!isRunning)}
+                    onReset={reset}
+                    onToggleShock={toggleShock}
+                    shockActive={state.params.shockActive}
+                />
             </div>
+
+            {/* Floating UI: Metrics (Top Right) */}
+            <div className="absolute top-6 right-6 z-10 w-80">
+                <MetricsDisplay
+                    totalObligations={state.totalObligations}
+                    unsettledObligations={state.unsettledObligations}
+                    failedNodes={state.failedNodes}
+                    tick={state.tick}
+                />
+            </div>
+
+            {/* Legend / Status Bar (Bottom Center) */}
+            <div className="absolute bottom-6 z-10 bg-background/50 backdrop-blur-md px-6 py-2 rounded-full border border-white/10 flex gap-6 text-[10px] uppercase font-bold tracking-widest text-muted-foreground shadow-lg">
+                <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" /> Failed</span>
+                <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-yellow-400" /> Stressed</span>
+                <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-violet-500" /> Healthy</span>
+            </div>
+
         </div>
     );
 };

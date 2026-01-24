@@ -1,20 +1,21 @@
 import React, { useEffect, useRef, useMemo } from 'react';
 import * as d3 from 'd3';
 import type { Node, Edge, EntityType } from '../../core/types';
+import { cn } from '../../lib/utils';
 
 interface LayeredGraphProps {
     nodes: Node[];
     edges: Edge[];
     width: number;
     height: number;
+    className?: string;
 }
 
 const LAYER_ORDER: EntityType[] = ['CONSUMER', 'RETAILER', 'WHOLESALER', 'MANUFACTURER'];
 
-export const LayeredGraph: React.FC<LayeredGraphProps> = ({ nodes, edges, width, height }) => {
+export const LayeredGraph: React.FC<LayeredGraphProps> = ({ nodes, edges, width, height, className }) => {
     const svgRef = useRef<SVGSVGElement>(null);
 
-    // Group nodes by layer
     const nodesByLayer = useMemo(() => {
         const grouped = {
             CONSUMER: [] as Node[],
@@ -26,23 +27,12 @@ export const LayeredGraph: React.FC<LayeredGraphProps> = ({ nodes, edges, width,
         return grouped;
     }, [nodes]);
 
-    // Calculate positions
     const nodePositions = useMemo(() => {
         const positions = new Map<string, { x: number; y: number }>();
-        // const layerHeight = height / (LAYER_ORDER.length + 1);
 
         LAYER_ORDER.forEach((layer, layerIndex) => {
             const layerNodes = nodesByLayer[layer];
-            // const layerY = height - (layerIndex + 1) * layerHeight; // Consumers at bottom? Or Top?
-            // Let's put Consumers at the Bottom (Layer 0) and Manufacturers at Top.
-            // Or Follow the prompt: "Consumers (top)" -> "Manufacturers (bottom)".
-            // Let's do Consumers Top to match the "Credit flowing up" or "Goods flowing down"?
-            // Prompt said: "Edges point up the supply chain (who owes whom): Consumer -> Retailer".
-            // Usually Supply Chain flows Down (M -> W -> R -> C). Money flows Up.
-            // Let's place Consumers at BOTTOM and Manufacturers at TOP, so Money/Obligations flow UP.
-            // Wait, standard charts often have "Roots" at top.
-            // Let's try Consumers at Bottom (y = height - padding) and Manufacturers at Top (y = padding).
-
+            // Padding based on count
             const _y = height - ((layerIndex + 0.5) * (height / LAYER_ORDER.length));
 
             layerNodes.forEach((node, nodeIndex) => {
@@ -57,9 +47,24 @@ export const LayeredGraph: React.FC<LayeredGraphProps> = ({ nodes, edges, width,
         if (!svgRef.current) return;
 
         const svg = d3.select(svgRef.current);
-        svg.selectAll("*").remove(); // Clear previous
+        svg.selectAll("*").remove();
 
-        // Draw Edges
+        // Define Glow Filter
+        const defs = svg.append("defs");
+        const filter = defs.append("filter")
+            .attr("id", "glow")
+            .attr("x", "-50%")
+            .attr("y", "-50%")
+            .attr("width", "200%")
+            .attr("height", "200%");
+        filter.append("feGaussianBlur")
+            .attr("stdDeviation", "2.5")
+            .attr("result", "coloredBlur");
+        const feMerge = filter.append("feMerge");
+        feMerge.append("feMergeNode").attr("in", "coloredBlur");
+        feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+        // Edges (bottom layer)
         svg.append("g")
             .attr("class", "edges")
             .selectAll("line")
@@ -70,11 +75,13 @@ export const LayeredGraph: React.FC<LayeredGraphProps> = ({ nodes, edges, width,
             .attr("y1", (d: Edge) => nodePositions.get(d.source)?.y || 0)
             .attr("x2", (d: Edge) => nodePositions.get(d.target)?.x || 0)
             .attr("y2", (d: Edge) => nodePositions.get(d.target)?.y || 0)
-            .attr("stroke", (d: Edge) => d.isDelayed ? "#ef4444" : "#94a3b8") // Red if delayed, Slate-400 if normal
-            .attr("stroke-width", (d: Edge) => Math.max(1, Math.min(5, d.amount / 50))) // Thickness based on amount
-            .attr("opacity", 0.6);
+            .attr("stroke", (d: Edge) => d.isDelayed ? "#ef4444" : "#4ade80") // Green for flow, Red for freeze
+            .attr("stroke-width", (d: Edge) => d.isDelayed ? 2 : Math.max(0.5, Math.min(3, d.amount / 50)))
+            .attr("opacity", (d: Edge) => d.isDelayed ? 0.8 : 0.4)
+            .attr("filter", "url(#glow)") // Add glow
+            .style("mix-blend-mode", "screen");
 
-        // Draw Nodes
+        // Nodes (top layer)
         const nodeGroup = svg.append("g")
             .attr("class", "nodes")
             .selectAll("circle")
@@ -87,21 +94,26 @@ export const LayeredGraph: React.FC<LayeredGraphProps> = ({ nodes, edges, width,
             });
 
         nodeGroup.append("circle")
-            .attr("r", (d: Node) => d.type === 'MANUFACTURER' ? 12 : d.type === 'WHOLESALER' ? 10 : d.type === 'RETAILER' ? 8 : 5)
+            .attr("r", (d: Node) => d.type === 'MANUFACTURER' ? 14 : d.type === 'WHOLESALER' ? 10 : d.type === 'RETAILER' ? 7 : 4)
             .attr("fill", (d: Node) => {
                 if (d.status === 'FAILED') return "#ef4444"; // Red
-                if (d.status === 'STRESSED') return "#eab308"; // Yellow
-                // Healthy colors based on tier? or just Green?
-                return "#22c55e"; // Green
+                if (d.status === 'STRESSED') return "#eab308"; // Warn
+                return "#121212"; // Dark Core
             })
-            .attr("stroke", "#ffffff")
-            .attr("stroke-width", 1.5)
-            .append("title") // Tooltip
-            .text((d: Node) => `${d.label}\nStatus: ${d.status}\nLiquidity: $${d.liquidity.toFixed(0)}`);
+            .attr("stroke", (d: Node) => {
+                if (d.status === 'FAILED') return "#ef4444";
+                if (d.status === 'STRESSED') return "#eab308";
+                return "#8b5cf6"; // Violet outline for healthy
+            })
+            .attr("stroke-width", (d: Node) => d.status === 'HEALTHY' ? 2 : 3)
+            .attr("filter", "url(#glow)")
+            .style("cursor", "crosshair")
+            .append("title")
+            .text((d: Node) => `${d.label}\nStatus: ${d.status}\nLiquidity: $${d.liquidity.toLocaleString()}`);
 
     }, [nodes, edges, nodePositions, width, height]);
 
     return (
-        <svg ref={svgRef} width={width} height={height} className="overflow-visible" />
+        <svg ref={svgRef} width={width} height={height} className={cn("overflow-visible", className)} />
     );
 };
