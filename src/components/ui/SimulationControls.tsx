@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, Pause, RotateCcw, Zap } from 'lucide-react';
+import { Play, Pause, RotateCcw, Zap, LogOut } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { ModeToggle } from './ModeToggle';
 
@@ -9,6 +9,7 @@ interface SimulationControlsProps {
     onReset: () => void;
     onToggleShock: () => void;
     shockActive: boolean;
+    onExit: () => void;
     className?: string; // Allow passing top-level class names
 }
 
@@ -18,12 +19,22 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
     onReset,
     onToggleShock,
     shockActive,
+    onExit,
     className
 }) => {
     return (
         <div className={cn("flex flex-col gap-4 p-5 bg-background/60 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl w-80", className)}>
             <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Command</h3>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={onExit}
+                        className="p-1.5 rounded-lg text-muted-foreground hover:bg-white/10 hover:text-foreground transition-colors"
+                        title="Exit Simulation"
+                    >
+                        <LogOut size={16} />
+                    </button>
+                    <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Command</h3>
+                </div>
                 <ModeToggle className="w-8 h-8 p-1.5" />
             </div>
 

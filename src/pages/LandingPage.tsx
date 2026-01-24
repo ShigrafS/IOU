@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Clock, Layers, TrendingDown, Info, Zap, Activity } from 'lucide-react';
+import { ArrowRight, Clock, Layers, TrendingDown, Zap, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ModeToggle } from '../components/ui/ModeToggle';
 
@@ -58,7 +58,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
                         <Activity size={14} /> Hackonomics 2026
                     </div>
 
-                    <h1 className="text-7xl md:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/50 drop-shadow-sm text-center">
+                    <h1 className="text-7xl md:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-foreground via-foreground to-foreground/50 drop-shadow-sm text-center">
                         CREDIT <br /> IS LATENCY.
                     </h1>
 
@@ -71,7 +71,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 1, duration: 1 }}
-                        className="absolute bottom-12 flex flex-col items-center gap-2 opacity-50"
+                        className="mt-12 flex flex-col items-center gap-2 opacity-50"
                     >
                         <span className="text-[10px] uppercase tracking-[0.2em]">Explore the system</span>
                         <div className="w-[1px] h-12 bg-gradient-to-b from-foreground to-transparent"></div>

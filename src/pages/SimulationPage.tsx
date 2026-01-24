@@ -4,72 +4,91 @@ import { LayeredGraph } from '../components/viz/LayeredGraph';
 import { SimulationControls } from '../components/ui/SimulationControls';
 import { MetricsDisplay } from '../components/ui/MetricsDisplay';
 
-export const SimulationPage: React.FC = () => {
+export const SimulationPage: React.FC<{ onExit: () => void }> = ({ onExit }) => {
     const { state, isRunning, setIsRunning, reset, toggleShock } = useSimulation();
     const containerRef = useRef<HTMLDivElement>(null);
     const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
 
     useEffect(() => {
-        const handleResize = () => {
-            if (containerRef.current) {
-                const { width, height } = containerRef.current.getBoundingClientRect();
-                setDimensions({ width, height });
+        if (!containerRef.current) return;
+
+        const resizeObserver = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+                const { width, height } = entry.contentRect;
+                if (width > 0 && height > 0) {
+                    setDimensions({ width, height });
+                }
             }
-        };
+        });
 
-        window.addEventListener('resize', handleResize);
-        handleResize();
-
-        return () => window.removeEventListener('resize', handleResize);
+        resizeObserver.observe(containerRef.current);
+        return () => resizeObserver.disconnect();
     }, []);
 
     return (
-        <div className="relative w-screen h-screen bg-background overflow-hidden flex flex-col items-center justify-center">
+        <div className="flex h-screen bg-background overflow-hidden relative">
 
-            {/* Background Decor */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.1),transparent_70%)] pointer-events-none" />
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none"></div>
+            {/* Background Decor (Global) */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none z-0"></div>
 
-            {/* Main Graph Canvas */}
-            <div ref={containerRef} className="absolute inset-0 z-0">
-                {dimensions.width > 0 && (
-                    <LayeredGraph
-                        nodes={state.nodes}
-                        edges={state.edges}
-                        width={dimensions.width}
-                        height={dimensions.height}
-                        className="w-full h-full"
+            {/* Sidebar (Left) */}
+            <aside className="w-96 flex flex-col gap-6 p-6 border-r border-white/10 bg-background/80 backdrop-blur-xl z-20 shadow-2xl overflow-y-auto">
+                <div>
+                    <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Operations</h2>
+                    <SimulationControls
+                        isRunning={isRunning}
+                        onTogglePlay={() => setIsRunning(!isRunning)}
+                        onReset={reset}
+                        onToggleShock={toggleShock}
+                        shockActive={state.params.shockActive}
+                        onExit={onExit}
+                        className="w-full shadow-none border-0 bg-transparent p-0"
                     />
-                )}
-            </div>
+                </div>
 
-            {/* Floating UI: Controls (Top Left) */}
-            <div className="absolute top-6 left-6 z-10 w-80">
-                <SimulationControls
-                    isRunning={isRunning}
-                    onTogglePlay={() => setIsRunning(!isRunning)}
-                    onReset={reset}
-                    onToggleShock={toggleShock}
-                    shockActive={state.params.shockActive}
-                />
-            </div>
+                <div className="flex-1">
+                    <MetricsDisplay
+                        totalObligations={state.totalObligations}
+                        unsettledObligations={state.unsettledObligations}
+                        failedNodes={state.failedNodes}
+                        tick={state.tick}
+                        className="w-full shadow-none border-0 bg-transparent p-0"
+                    />
+                </div>
 
-            {/* Floating UI: Metrics (Top Right) */}
-            <div className="absolute top-6 right-6 z-10 w-80">
-                <MetricsDisplay
-                    totalObligations={state.totalObligations}
-                    unsettledObligations={state.unsettledObligations}
-                    failedNodes={state.failedNodes}
-                    tick={state.tick}
-                />
-            </div>
+                <div className="text-[10px] text-muted-foreground text-center border-t border-white/5 pt-4">
+                    System v3.0 // Ready
+                </div>
+            </aside>
 
-            {/* Legend / Status Bar (Bottom Center) */}
-            <div className="absolute bottom-6 z-10 bg-background/50 backdrop-blur-md px-6 py-2 rounded-full border border-white/10 flex gap-6 text-[10px] uppercase font-bold tracking-widest text-muted-foreground shadow-lg">
-                <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" /> Failed</span>
-                <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-yellow-400" /> Stressed</span>
-                <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-violet-500" /> Healthy</span>
-            </div>
+            {/* Main Graph Area (Right) */}
+            <main className="flex-1 relative bg-black/20" ref={containerRef}>
+                {/* Graph Visual */}
+                <div className="absolute inset-0 z-10">
+                    {dimensions.width > 0 && (
+                        <LayeredGraph
+                            nodes={state.nodes}
+                            edges={state.edges}
+                            width={dimensions.width}
+                            height={dimensions.height}
+                            className="w-full h-full"
+                        />
+                    )}
+                </div>
+
+                {/* Legend (Bottom Right) */}
+                <div className="absolute bottom-6 right-6 z-20 bg-background/80 backdrop-blur-md px-4 py-2 rounded-lg border border-white/10 flex flex-col gap-2 shadow-lg">
+                    <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-muted-foreground">
+                        <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]" /> Failed
+                    </div>
+                    <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-muted-foreground">
+                        <span className="w-2 h-2 rounded-full bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.5)]" /> Stressed
+                    </div>
+                    <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-muted-foreground">
+                        <span className="w-2 h-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.5)]" /> Healthy
+                    </div>
+                </div>
+            </main>
 
         </div>
     );

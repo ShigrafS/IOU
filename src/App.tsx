@@ -10,7 +10,7 @@ function App() {
       {view === 'landing' ? (
         <LandingPage onStart={() => setView('simulation')} />
       ) : (
-        <SimulationPage />
+        <SimulationPage onExit={() => setView('landing')} />
       )}
     </>
   );
