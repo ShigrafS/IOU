@@ -1,6 +1,5 @@
 import React from 'react';
 import { ArrowRight, Activity, Layers, AlertTriangle } from 'lucide-react';
-import { cn } from '../lib/utils';
 
 interface LandingPageProps {
     onStart: () => void;

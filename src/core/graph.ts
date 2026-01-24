@@ -1,4 +1,4 @@
-import { Node, Edge, EntityType } from './types';
+import type { Node, Edge, EntityType } from './types';
 import { SIMULATION_PARAMS } from './constants';
 
 let nodeIdCounter = 0;

@@ -1,8 +1,7 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
-import { SimulationState, Node, Edge } from '../core/types';
+import { useState, useCallback, useEffect } from 'react';
+import type { SimulationState } from '../core/types';
 import { initializeGraph } from '../core/graph';
 import { runSimulationTick } from '../core/simulation';
-import { SIMULATION_PARAMS } from '../core/constants';
 
 export const useSimulation = () => {
     const [state, setState] = useState<SimulationState>(() => {
@@ -22,7 +21,7 @@ export const useSimulation = () => {
     });
 
     const [isRunning, setIsRunning] = useState(false);
-    const requestRef = useRef<number>();
+    // const requestRef = useRef<number>();
 
     const reset = useCallback(() => {
         setIsRunning(false);
@@ -51,21 +50,12 @@ export const useSimulation = () => {
         }));
     }, []);
 
-    const tick = useCallback(() => {
-        setState(prev => runSimulationTick(prev));
-    }, []);
-
-    const animate = useCallback(() => {
-        if (isRunning) {
-            if (document.visibilityState === 'visible') { // Simple optimization
-                setState(prev => runSimulationTick(prev));
-            }
-            // running at 60fps might be too fast for the simulation logic per tick?
-            // Let's slow it down or use setInterval.
-            // requestAnimationFrame is fine if we want smooth viz updates, but logical ticks might need throttling.
-            // Let's try every 100ms.
-        }
-    }, [isRunning]);
+    //         // running at 60fps might be too fast for the simulation logic per tick?
+    //         // Let's slow it down or use setInterval.
+    //         // requestAnimationFrame is fine if we want smooth viz updates, but logical ticks might need throttling.
+    //         // Let's try every 100ms.
+    //     }
+    // }, [isRunning]);
 
     useEffect(() => {
         let intervalId: any;

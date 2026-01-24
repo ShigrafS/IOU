@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { SimulationPage } from './pages/SimulationPage';
 import { LandingPage } from './pages/LandingPage';
 

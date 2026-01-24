@@ -1,6 +1,5 @@
-import { Node, Edge, SimulationState, EntityType } from './types';
+import type { Node, Edge, SimulationState } from './types';
 import { SIMULATION_PARAMS } from './constants';
-import { getUpstreamNodes } from './graph';
 
 let edgeIdCounter = 0;
 
@@ -131,7 +130,7 @@ export const runSimulationTick = (state: SimulationState): SimulationState => {
     const delayedEdges = activeEdges.filter(e => e.isDelayed);
     const totalDelayedAmount = delayedEdges.reduce((sum, e) => sum + e.amount, 0);
 
-    const unsettledPaymentRatio = totalObligations > 0 ? totalDelayedAmount / totalObligations : 0;
+    // const unsettledPaymentRatio = totalObligations > 0 ? totalDelayedAmount / totalObligations : 0;
 
     return {
         nodes: newNodes,
