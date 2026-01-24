@@ -1,73 +1,93 @@
-# React + TypeScript + Vite
+# Credit Chain Fragility Simulator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> **"Credit is just latency."**
 
-Currently, two official plugins are available:
+An interactive economic simulation that models how deferred payments (credit) create systemic risk. This project demonstrates how a single payment delay in a supply chain can cascade upwards, transforming a liquidity crunch into a total network freeze.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Built for **Hackonomics 2026**.
 
-## React Compiler
+![Banner Hint](https://img.shields.io/badge/Status-Operational-violet) ![Stack](https://img.shields.io/badge/Tech-React_D3_Tailwind-blue)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 📉 The Theory
 
-## Expanding the ESLint configuration
+Modern economies rely on the assumption that future money is as good as present money.
+- **Consumers** buy on credit.
+- **Retailers** pay with Net-30 invoices.
+- **Wholesalers** operate on commercial paper margins.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+This simulator visualizes the **Credit Chain**:
+1.  **Bottom Layer**: Consumers
+2.  **Top Layer**: Manufacturers
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+When the bottom layer delays payment, the "liquidity void" travels up the chain faster than goods travel down. If liquidity buffers are breached, nodes fail, leading to systemic contagion.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## ✨ Features
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+-   **Agent-Based Simulation**: A 4-tier economy with autonomous nodes (Consumer -> Retailer -> Wholesaler -> Manufacturer).
+-   **Real-time Network Visualization**: D3.js-powered force-directed graph with glowing neon aesthetics.
+-   **"Glass Cockpit" UI**: Modern, floating interface for simulation controls and metrics.
+-   **Interactive Mechanics**:
+    -   **Liquidity Shock**: Manually trigger a "credit freeze" event to observe cascading failures.
+    -   **Metrics**: Track the "Unsettled Payment Ratio" (UPR) in real-time.
+-   **Scrollytelling Landing Page**: An immersive introduction to the economic theory behind the model.
+
+## 🛠️ Tech Stack
+
+-   **Core**: React 18, TypeScript, Vite
+-   **Styling**: TailwindCSS v4, Framer Motion (Animations)
+-   **Visualization**: D3.js
+-   **Icons**: Lucide React
+
+## 🚀 Getting Started
+
+### Prerequisites
+-   Node.js (v18+)
+-   npm
+
+### Installation
+
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/your-username/credit-chain-fragility.git
+    cd credit-chain-fragility
+    ```
+
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+
+3.  Run the development server:
+    ```bash
+    npm run dev
+    ```
+
+4.  Open `http://localhost:5173` in your browser.
+
+## 🎮 How to Use
+
+1.  **Launch**: Start from the Landing Page and click "Initiate Simulation".
+2.  **Observe**: Watch the green edges (active payments). Nodes pulse as they transact.
+3.  **Stress Test**:
+    -   Toggle **"Liquidity Shock"** in the sidebar.
+    -   Watch as edges turn **RED** (Delayed).
+    -   Observe nodes changing from Green (Healthy) -> Yellow (Stressed) -> Red (Failed).
+4.  **Analyze**: Monitor the **Unsettled Payment Ratio** meter. A value > 60% usually indicates total geometric collapse.
+5.  **Exit**: Use the `LogOut` icon in the sidebar to return to the theory section.
+
+## 📂 Project Structure
+
+```
+src/
+├── components/
+│   ├── ui/          # Glassmorphism controls & metrics
+│   └── viz/         # D3.js LayeredGraph component
+├── core/            # Simulation logic (Tick loop, Entity types)
+├── hooks/           # useSimulation custom hook
+├── pages/           # LandingPage and SimulationPage
+└── index.css        # Tailwind/CSS variable definitions (Charcoal Theme)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📄 License
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
