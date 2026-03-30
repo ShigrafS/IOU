@@ -93,7 +93,7 @@ export const useSimulation = () => {
                     ].slice(-300); // Keep last 300 ticks
                     return { ...next, history: newHistory };
                 });
-            }, 200); // 5 ticks per second
+            }, 500); // 2 ticks per second (Slower for better legibility)
         }
         return () => clearInterval(intervalId);
     }, [isRunning]);
