@@ -1,4 +1,5 @@
-import { Preset, presets } from './presets';
+// import type { Preset } from './presets'; // Not currently used directly in this file
+// import { presets } from './presets';
 
 export interface Lesson {
   id: string;

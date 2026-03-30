@@ -11,13 +11,13 @@ interface MetricItemProps {
 }
 
 const MetricItem = ({ label, value, icon, colorClass, sublabel }: MetricItemProps) => (
-    <div className="flex flex-col gap-1 p-3 rounded-xl bg-white/5 border border-white/5">
+    <div className="flex flex-col gap-1 p-3 rounded-2xl bg-[#2c2c2e] transition-colors">
         <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{label}</span>
-            <div className={cn("p-1 rounded-md", colorClass)}>{icon}</div>
+            <span className="text-[11px] font-semibold text-muted-foreground">{label}</span>
+            <div className={cn("p-1 rounded-lg", colorClass)}>{icon}</div>
         </div>
-        <div className="text-xl font-black tracking-tighter">{value}</div>
-        {sublabel && <div className="text-[9px] text-muted-foreground italic font-medium">{sublabel}</div>}
+        <div className="text-xl font-bold tracking-tight">{value}</div>
+        {sublabel && <div className="text-[11px] text-muted-foreground">{sublabel}</div>}
     </div>
 );
 
@@ -54,33 +54,33 @@ export const HeadlineMetrics: React.FC<HeadlineMetricsProps> = ({ nodes, history
     }, [nodes, history, totalObligations]);
 
     return (
-        <div className={cn("grid grid-cols-2 gap-3", className)}>
+        <div className={cn("grid grid-cols-2 gap-2.5", className)}>
             <MetricItem 
                 label="% Defaulted"
                 value={`${metrics.percentDefaulted}%`}
                 icon={<AlertTriangle size={14} />}
-                colorClass="bg-red-500/10 text-red-500"
+                colorClass="bg-[#FF453A]/15 text-[#FF453A]"
                 sublabel={metrics.percentDefaulted > 0 ? "Cascading failures" : "Safe levels"}
             />
             <MetricItem 
                 label="First Default"
                 value={metrics.timeToFirstDefault}
                 icon={<Clock size={14} />}
-                colorClass="bg-amber-500/10 text-amber-500"
+                colorClass="bg-[#FF9F0A]/15 text-[#FF9F0A]"
                 sublabel="Simulation Tick"
             />
             <MetricItem 
                 label="System Stability"
                 value={metrics.timeToCollapse}
                 icon={<Activity size={14} />}
-                colorClass={metrics.timeToCollapse === 'STABLE' ? "bg-green-500/10 text-green-500" : "bg-destructive/10 text-destructive"}
+                colorClass={metrics.timeToCollapse === 'STABLE' ? "bg-[#30D158]/15 text-[#30D158]" : "bg-[#FF453A]/15 text-[#FF453A]"}
                 sublabel="Collapse @ 25%"
             />
             <MetricItem 
                 label="Buffer Strain"
                 value={`${metrics.exhaustionRate}%`}
                 icon={<TrendingDown size={14} />}
-                colorClass="bg-blue-500/10 text-blue-500"
+                colorClass="bg-primary/15 text-primary"
                 sublabel="Liquidity Exhaustion"
             />
         </div>

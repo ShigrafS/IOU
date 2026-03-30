@@ -26,31 +26,29 @@ export const PresetPicker: React.FC<PresetPickerProps> = ({
 }) => {
     return (
         <div className={cn("space-y-3", className)}>
-            <div className="flex items-center justify-between px-1">
-                <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Scenario Presets</h3>
-            </div>
+            <h3 className="text-[13px] font-semibold text-muted-foreground px-1">Scenario Presets</h3>
             <div className="grid grid-cols-1 gap-2">
                 {presets.map((preset) => (
                     <button
                         key={preset.id}
                         onClick={() => onSelect(preset)}
                         className={cn(
-                            "flex flex-col items-start text-left p-3 rounded-xl border transition-all group",
+                            "flex flex-col items-start text-left p-3 rounded-2xl border transition-all group",
                             activePresetId === preset.id
-                                ? "bg-primary/10 border-primary shadow-[0_0_15px_-5px_rgba(var(--primary),0.4)]"
-                                : "bg-white/5 border-white/5 hover:border-white/20 hover:bg-white/10"
+                                ? "bg-primary/10 border-primary/30"
+                                : "bg-[#2c2c2e] border-transparent hover:bg-[#3a3a3c]"
                         )}
                     >
-                        <div className="flex items-center gap-2 w-full mb-1">
+                        <div className="flex items-center gap-2.5 w-full mb-1">
                             <div className={cn(
                                 "p-1.5 rounded-lg transition-colors",
-                                activePresetId === preset.id ? "bg-primary text-primary-foreground" : "bg-white/10 text-muted-foreground group-hover:text-foreground"
+                                activePresetId === preset.id ? "bg-primary text-white" : "bg-[#48484a] text-muted-foreground group-hover:text-foreground"
                             )}>
                                 <PresetIcon id={preset.id} />
                             </div>
-                            <span className="text-sm font-bold tracking-tight">{preset.name}</span>
+                            <span className="text-[15px] font-semibold tracking-tight">{preset.name}</span>
                         </div>
-                        <p className="text-[10px] text-muted-foreground leading-tight px-1">
+                        <p className="text-[13px] text-muted-foreground leading-relaxed pl-1">
                             {preset.description}
                         </p>
                     </button>

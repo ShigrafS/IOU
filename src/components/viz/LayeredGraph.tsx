@@ -75,10 +75,10 @@ export const LayeredGraph: React.FC<LayeredGraphProps> = ({ nodes, edges, width,
             .attr("y1", (d: Edge) => nodePositions.get(d.source)?.y || 0)
             .attr("x2", (d: Edge) => nodePositions.get(d.target)?.x || 0)
             .attr("y2", (d: Edge) => nodePositions.get(d.target)?.y || 0)
-            .attr("stroke", (d: Edge) => d.isDelayed ? "#ef4444" : "#4ade80") // Green for flow, Red for freeze
+            .attr("stroke", (d: Edge) => d.isDelayed ? "#FF453A" : "#30D158") // iOS Red for freeze, iOS Green for flow
             .attr("stroke-width", (d: Edge) => d.isDelayed ? 2 : Math.max(0.5, Math.min(3, d.amount / 50)))
-            .attr("opacity", (d: Edge) => d.isDelayed ? 0.8 : 0.4)
-            .attr("filter", "url(#glow)") // Add glow
+            .attr("opacity", (d: Edge) => d.isDelayed ? 0.7 : 0.3)
+            .attr("filter", "url(#glow)")
             .style("mix-blend-mode", "screen");
 
         // Nodes (top layer)
@@ -96,14 +96,14 @@ export const LayeredGraph: React.FC<LayeredGraphProps> = ({ nodes, edges, width,
         nodeGroup.append("circle")
             .attr("r", (d: Node) => d.type === 'MANUFACTURER' ? 14 : d.type === 'WHOLESALER' ? 10 : d.type === 'RETAILER' ? 7 : 4)
             .attr("fill", (d: Node) => {
-                if (d.status === 'FAILED') return "#ef4444"; // Red
-                if (d.status === 'STRESSED') return "#eab308"; // Warn
-                return "#121212"; // Dark Core
+                if (d.status === 'FAILED') return "#FF453A"; // iOS Red
+                if (d.status === 'STRESSED') return "#FFD60A"; // iOS Yellow
+                return "#000000"; // Pure black core
             })
             .attr("stroke", (d: Node) => {
-                if (d.status === 'FAILED') return "#ef4444";
-                if (d.status === 'STRESSED') return "#eab308";
-                return "#8b5cf6"; // Violet outline for healthy
+                if (d.status === 'FAILED') return "#FF453A";
+                if (d.status === 'STRESSED') return "#FFD60A";
+                return "#0A84FF"; // Apple Blue for healthy
             })
             .attr("stroke-width", (d: Node) => d.status === 'HEALTHY' ? 2 : 3)
             .attr("filter", "url(#glow)")

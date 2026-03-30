@@ -37,13 +37,10 @@ export const SimulationPage: React.FC<{
     }, []);
 
     return (
-        <div className="flex h-screen bg-background overflow-hidden relative">
+        <div className="flex h-screen bg-background overflow-hidden">
 
-            {/* Background Decor (Global) */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none z-0"></div>
-
-            {/* Sidebar (Left) */}
-            <aside className="w-96 flex flex-col gap-6 p-6 border-r border-white/10 bg-background/80 backdrop-blur-xl z-20 shadow-2xl overflow-y-auto">
+            {/* Sidebar — macOS-style: solid elevated surface, clean borders */}
+            <aside className="w-96 flex flex-col gap-5 p-5 border-r border-border bg-card z-20 overflow-y-auto">
                 {mode === 'guided' && lessonId ? (
                     <GuidedLessonPanel
                         lesson={lessons.find(l => l.id === lessonId) || lessons[0]}
@@ -61,7 +58,7 @@ export const SimulationPage: React.FC<{
                     />
                 ) : (
                     <div>
-                        <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Operations</h2>
+                        <h2 className="text-[13px] font-semibold text-muted-foreground mb-4">Operations</h2>
                         <SimulationControls
                             isRunning={isRunning}
                             onTogglePlay={() => setIsRunning(!isRunning)}
@@ -74,18 +71,18 @@ export const SimulationPage: React.FC<{
 
                         <PresetPicker 
                             onSelect={applyPreset}
-                            className="mt-6 pt-6 border-t border-white/10"
+                            className="mt-5 pt-5 border-t border-border"
                         />
 
                         <ParameterSliders
                             params={state.params}
                             onChange={setParams}
-                            className="mt-6 pt-6 border-t border-white/10"
+                            className="mt-5 pt-5 border-t border-border"
                         />
                     </div>
                 )}
 
-                <div className="flex-1 space-y-6">
+                <div className="flex-1 space-y-5">
                     <HeadlineMetrics 
                         nodes={state.nodes}
                         history={state.history}
@@ -97,17 +94,17 @@ export const SimulationPage: React.FC<{
                         unsettledObligations={state.unsettledObligations}
                         failedNodes={state.failedNodes}
                         tick={state.tick}
-                        className="w-full shadow-none border-0 bg-transparent p-0 opacity-50 contrast-50 grayscale scale-95 origin-top"
+                        className="w-full shadow-none border-0 bg-transparent p-0 opacity-60"
                     />
                 </div>
 
-                <div className="text-[10px] text-muted-foreground text-center border-t border-white/5 pt-4">
-                    System v3.0 // Ready
+                <div className="text-[11px] text-muted-foreground text-center border-t border-border pt-4">
+                    IOU v3.0
                 </div>
             </aside>
 
-            {/* Main Graph Area (Right) */}
-            <main className="flex-1 relative bg-black/20" ref={containerRef}>
+            {/* Main Graph Area */}
+            <main className="flex-1 relative bg-background" ref={containerRef}>
                 {/* Graph Visual */}
                 <div className="absolute inset-0 z-10">
                     {dimensions.width > 0 && (
@@ -121,20 +118,20 @@ export const SimulationPage: React.FC<{
                     )}
                 </div>
 
-                {/* Legend (Bottom Right) */}
-                <div className="absolute bottom-6 right-6 z-20 bg-background/80 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10 flex flex-col gap-2 shadow-lg">
-                    <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-muted-foreground">
-                        <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]" /> Failed
+                {/* Legend — clean Apple-style floating card */}
+                <div className="absolute bottom-6 right-6 z-20 bg-card px-5 py-4 rounded-2xl border border-border flex flex-col gap-2.5">
+                    <div className="flex items-center gap-2.5 text-[11px] font-medium text-muted-foreground">
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#FF453A]" /> Failed
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-muted-foreground">
-                        <span className="w-2 h-2 rounded-full bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.5)]" /> Stressed
+                    <div className="flex items-center gap-2.5 text-[11px] font-medium text-muted-foreground">
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#FFD60A]" /> Stressed
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-muted-foreground">
-                        <span className="w-2 h-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.5)]" /> Healthy
+                    <div className="flex items-center gap-2.5 text-[11px] font-medium text-muted-foreground">
+                        <span className="w-2.5 h-2.5 rounded-full bg-primary" /> Healthy
                     </div>
                 </div>
 
-                {/* Timeline Chart Overlay (Bottom Left) */}
+                {/* Timeline Chart Overlay */}
                 <div className="absolute bottom-6 left-6 right-24 z-20 pointer-events-none">
                     <DefaultsTimeline 
                         data={state.history} 

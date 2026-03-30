@@ -140,6 +140,7 @@ export const runSimulationTick = (state: SimulationState): SimulationState => {
         unsettledObligations: totalDelayedAmount, // Using delayed amount as proxy for "bad" unsettling
         failedNodes,
         params,
+        history: state.history,
         // Add raw ratio to state if needed, or derived in UI
     };
 };

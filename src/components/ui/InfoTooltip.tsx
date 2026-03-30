@@ -1,44 +1,36 @@
 import React from 'react';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { Info } from 'lucide-react';
-import { cn } from '../../lib/utils';
 
 interface InfoTooltipProps {
     content: string;
     whyItMatters?: string;
-    children?: React.ReactNode;
-    className?: string;
 }
 
-export const InfoTooltip: React.FC<InfoTooltipProps> = ({ 
-    content, 
-    whyItMatters, 
-    children, 
-    className 
-}) => {
+export const InfoTooltip: React.FC<InfoTooltipProps> = ({ content, whyItMatters }) => {
     return (
         <Tooltip.Provider delayDuration={200}>
             <Tooltip.Root>
                 <Tooltip.Trigger asChild>
-                    <button className={cn("inline-flex items-center justify-center text-muted-foreground hover:text-primary transition-colors focus:outline-none", className)}>
-                        {children || <Info size={14} />}
+                    <button className="p-0.5 text-muted-foreground hover:text-foreground transition-colors">
+                        <Info size={12} />
                     </button>
                 </Tooltip.Trigger>
                 <Tooltip.Portal>
                     <Tooltip.Content
-                        className="z-[100] max-w-xs animate-in fade-in zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 px-4 py-3 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl text-[11px] leading-relaxed select-none"
+                        className="z-[100] max-w-xs px-4 py-3 bg-[#2c2c2e] border border-border rounded-2xl shadow-2xl text-[13px] leading-relaxed select-none animate-in fade-in zoom-in-95"
                         sideOffset={8}
                     >
                         <div className="space-y-2">
-                            <p className="text-foreground font-medium">{content}</p>
+                            <p className="text-foreground">{content}</p>
                             {whyItMatters && (
-                                <p className="text-muted-foreground border-t border-white/5 pt-2 italic">
-                                    <span className="text-primary font-bold not-italic font-mono uppercase text-[9px] mr-1.5 underline decoration-primary/30">Why it matters:</span> 
+                                <p className="text-muted-foreground border-t border-border pt-2">
+                                    <span className="text-primary font-semibold text-[11px] mr-1">Why it matters:</span> 
                                     {whyItMatters}
                                 </p>
                             )}
                         </div>
-                        <Tooltip.Arrow className="fill-black/90" />
+                        <Tooltip.Arrow className="fill-[#2c2c2e]" />
                     </Tooltip.Content>
                 </Tooltip.Portal>
             </Tooltip.Root>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Play, Pause, RotateCcw, Zap, LogOut } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { ModeToggle } from './ModeToggle';
 
 interface SimulationControlsProps {
     isRunning: boolean;
@@ -10,7 +9,7 @@ interface SimulationControlsProps {
     onToggleShock: () => void;
     shockActive: boolean;
     onExit: () => void;
-    className?: string; // Allow passing top-level class names
+    className?: string;
 }
 
 export const SimulationControls: React.FC<SimulationControlsProps> = ({
@@ -23,66 +22,65 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
     className
 }) => {
     return (
-        <div className={cn("flex flex-col gap-4 p-5 bg-background/60 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl w-80", className)}>
+        <div className={cn("flex flex-col gap-4 w-full", className)}>
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <button
                         onClick={onExit}
-                        className="p-1.5 rounded-lg text-muted-foreground hover:bg-white/10 hover:text-foreground transition-colors"
+                        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground transition-colors"
                         title="Exit Simulation"
                     >
                         <LogOut size={16} />
                     </button>
-                    <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Command</h3>
+                    <h3 className="text-[13px] font-semibold text-muted-foreground">Command</h3>
                 </div>
-                <ModeToggle className="w-8 h-8 p-1.5" />
             </div>
 
             <div className="flex items-center gap-3">
                 <button
                     onClick={onTogglePlay}
                     className={cn(
-                        "flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold transition-all duration-200 active:scale-95 shadow-lg",
+                        "flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-[15px] transition-all duration-200 active:scale-[0.97]",
                         isRunning
-                            ? "bg-amber-500/10 text-amber-500 border border-amber-500/50 hover:bg-amber-500/20"
-                            : "bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_20px_-5px_rgba(var(--primary),0.5)]"
+                            ? "bg-[#FF9F0A]/15 text-[#FF9F0A] border border-[#FF9F0A]/30"
+                            : "bg-primary text-white"
                     )}
                 >
-                    {isRunning ? <><Pause size={18} /> PAUSE</> : <><Play size={18} /> START</>}
+                    {isRunning ? <><Pause size={18} /> Pause</> : <><Play size={18} /> Start</>}
                 </button>
 
                 <button
                     onClick={onReset}
-                    className="p-3 rounded-xl bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-white/5 transition-all"
+                    className="p-3 rounded-xl bg-[#2c2c2e] text-foreground hover:bg-[#3a3a3c] transition-colors"
                 >
                     <RotateCcw size={18} />
                 </button>
             </div>
 
-            <div className="space-y-3 pt-4 border-t border-white/10">
-                <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Injection</label>
-                </div>
+            <div className="space-y-3 pt-4 border-t border-border">
+                <label className="text-[13px] font-semibold text-muted-foreground">Injection</label>
                 <button
                     onClick={onToggleShock}
                     className={cn(
-                        "w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all duration-300 relative overflow-hidden group",
+                        "w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all duration-200",
                         shockActive
-                            ? "bg-destructive/20 border-destructive text-destructive shadow-[0_0_30px_-10px_rgba(239,68,68,0.4)]"
-                            : "bg-secondary/30 border-transparent hover:bg-secondary/50 hover:text-foreground"
+                            ? "bg-[#FF453A]/15 border-[#FF453A]/30 text-[#FF453A]"
+                            : "bg-[#2c2c2e] border-transparent hover:bg-[#3a3a3c] text-foreground"
                     )}
                 >
-                    <div className={cn("absolute inset-0 bg-destructive/10 translate-y-full transition-transform duration-300", shockActive ? "translate-y-0" : "group-hover:translate-y-0")} />
-                    <span className="flex items-center gap-2 relative z-10 font-medium">
-                        <Zap size={18} className={shockActive ? "fill-destructive animate-pulse" : ""} />
+                    <span className="flex items-center gap-2 font-medium text-[15px]">
+                        <Zap size={18} className={shockActive ? "fill-[#FF453A]" : ""} />
                         Liquidity Shock
                     </span>
-                    <span className={cn("text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-background/50 relative z-10 tracking-wider", shockActive ? "text-destructive" : "text-muted-foreground")}>
-                        {shockActive ? 'ACTIVE' : 'READY'}
+                    <span className={cn(
+                        "text-[11px] font-semibold px-2 py-0.5 rounded-full",
+                        shockActive ? "bg-[#FF453A]/20 text-[#FF453A]" : "bg-[#48484a] text-muted-foreground"
+                    )}>
+                        {shockActive ? 'Active' : 'Ready'}
                     </span>
                 </button>
-                <p className="text-xs text-muted-foreground/80 leading-relaxed px-1">
-                    {shockActive ? "CRITICAL: Cascading failures detected. Liquidity frozen." : "Normal market conditions. Payment flows nominal."}
+                <p className="text-[13px] text-muted-foreground leading-relaxed">
+                    {shockActive ? "Cascading failures detected. Liquidity frozen." : "Normal market conditions. Payment flows nominal."}
                 </p>
             </div>
         </div>

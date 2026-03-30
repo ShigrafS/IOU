@@ -24,13 +24,13 @@ interface SliderRowProps {
 const SliderRow: React.FC<SliderRowProps> = ({
     label, value, min, max, step, onChange, formatValue, tooltipContent, whyItMatters
 }) => (
-    <div className="space-y-3 p-3 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+    <div className="space-y-2.5 p-3 rounded-2xl bg-[#2c2c2e] transition-colors">
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-                <label className="text-xs font-bold tracking-tight text-foreground">{label}</label>
+                <label className="text-[13px] font-semibold text-foreground">{label}</label>
                 <InfoTooltip content={tooltipContent} whyItMatters={whyItMatters} />
             </div>
-            <span className="text-[10px] font-mono text-primary font-bold bg-primary/10 px-1.5 py-0.5 rounded">
+            <span className="text-[11px] font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
                 {formatValue(value)}
             </span>
         </div>
@@ -41,9 +41,9 @@ const SliderRow: React.FC<SliderRowProps> = ({
             step={step}
             value={value}
             onChange={(e) => onChange(parseFloat(e.target.value))}
-            className="w-full h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer outline-none focus:ring-2 focus:ring-primary/50 accent-primary"
+            className="w-full h-1 bg-[#48484a] rounded-full appearance-none cursor-pointer outline-none accent-primary"
         />
-        <div className="flex justify-between text-[8px] uppercase tracking-wider text-muted-foreground/50 font-mono">
+        <div className="flex justify-between text-[10px] text-muted-foreground">
             <span>{formatValue(min)}</span>
             <span>{formatValue(max)}</span>
         </div>
@@ -53,9 +53,7 @@ const SliderRow: React.FC<SliderRowProps> = ({
 export const ParameterSliders: React.FC<ParameterSlidersProps> = ({ params, onChange, className }) => {
     return (
         <div className={cn("space-y-4", className)}>
-            <div className="flex items-center justify-between px-1">
-                <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Economic Mechanics</h3>
-            </div>
+            <h3 className="text-[13px] font-semibold text-muted-foreground px-1">Economic Mechanics</h3>
             
             <div className="space-y-2">
                 <SliderRow
@@ -89,10 +87,8 @@ export const ParameterSliders: React.FC<ParameterSlidersProps> = ({ params, onCh
                 />
             </div>
             
-            <div className="pt-4 border-t border-white/10 space-y-4">
-                <div className="flex items-center justify-between px-1">
-                    <h3 className="text-[10px] font-bold uppercase tracking-widest text-destructive/80">Shock Parameters</h3>
-                </div>
+            <div className="pt-4 border-t border-border space-y-4">
+                <h3 className="text-[13px] font-semibold text-[#FF453A] px-1">Shock Parameters</h3>
                 
                 <div className="space-y-2">
                     <SliderRow
