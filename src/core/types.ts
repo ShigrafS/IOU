@@ -47,5 +47,16 @@ export interface SimulationState {
     params: {
         baseDelayProbability: number;
         shockActive: boolean;
+        transactionProbability: number;
+        standardDelay: number;
+        shockDelayIncrease: number;
+        shockProbabilityIncrease: number;
     };
+
+    history: Array<{
+        tick: number;
+        failedNodes: number;
+        totalObligations: number;
+        unsettledObligations: number;
+    }>;
 }
