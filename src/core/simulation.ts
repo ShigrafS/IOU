@@ -37,24 +37,24 @@ export const runSimulationTick = (state: SimulationState): SimulationState => {
     const manufacturers = newNodes.filter(n => n.type === 'MANUFACTURER');
 
     consumers.forEach(consumer => {
-        if (Math.random() < SIMULATION_PARAMS.TRANSACTION_PROBABILITY && consumer.status !== 'FAILED') {
+        if (Math.random() < params.transactionProbability && consumer.status !== 'FAILED') {
             const retailer = getRandomNode(retailers);
             if (retailer && retailer.status !== 'FAILED') {
                 const amount = Math.floor(Math.random() * (SIMULATION_PARAMS.TRANSACTION_AMOUNT_RANGE[1] - SIMULATION_PARAMS.TRANSACTION_AMOUNT_RANGE[0])) + SIMULATION_PARAMS.TRANSACTION_AMOUNT_RANGE[0];
 
                 // 1. Consumer -> Retailer obligation
-                newEdges.push(createEdge(consumer, retailer, amount, tick, SIMULATION_PARAMS.STANDARD_DELAY));
+                newEdges.push(createEdge(consumer, retailer, amount, tick, params.standardDelay));
 
                 // 2. Retailer -> Wholesaler obligation (Restock)
                 // Assuming Margin logic? or 1:1 replacement cost? Let's say 80% cost.
                 const wholesaler = getRandomNode(wholesalers);
                 if (wholesaler && wholesaler.status !== 'FAILED') {
-                    newEdges.push(createEdge(retailer, wholesaler, amount * 0.8, tick, SIMULATION_PARAMS.STANDARD_DELAY));
+                    newEdges.push(createEdge(retailer, wholesaler, amount * 0.8, tick, params.standardDelay));
 
                     // 3. Wholesaler -> Manufacturer obligation
                     const manufacturer = getRandomNode(manufacturers);
                     if (manufacturer && manufacturer.status !== 'FAILED') {
-                        newEdges.push(createEdge(wholesaler, manufacturer, amount * 0.6, tick, SIMULATION_PARAMS.STANDARD_DELAY));
+                        newEdges.push(createEdge(wholesaler, manufacturer, amount * 0.6, tick, params.standardDelay));
                     }
                 }
             }
@@ -74,7 +74,7 @@ export const runSimulationTick = (state: SimulationState): SimulationState => {
                 // Check for delay
                 let p = params.baseDelayProbability; // Base probability from state
                 if (params.shockActive) {
-                    p += SIMULATION_PARAMS.SHOCK_PROBABILITY_INCREASE;
+                    p += params.shockProbabilityIncrease;
                 }
 
                 // Logic: If source is stressed, delay prob increases? 
@@ -87,7 +87,7 @@ export const runSimulationTick = (state: SimulationState): SimulationState => {
                     return {
                         ...edge,
                         isDelayed: true,
-                        dueAt: tick + (params.shockActive ? SIMULATION_PARAMS.SHOCK_DELAY_INCREASE : SIMULATION_PARAMS.STANDARD_DELAY)
+                        dueAt: tick + (params.shockActive ? params.shockDelayIncrease : params.standardDelay)
                     };
                 } else {
                     // SETTLE

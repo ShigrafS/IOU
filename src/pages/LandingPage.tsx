@@ -4,7 +4,8 @@ import { motion } from 'framer-motion';
 import { ModeToggle } from '../components/ui/ModeToggle';
 
 interface LandingPageProps {
-    onStart: () => void;
+    onStartGuided: () => void;
+    onStartSandbox: () => void;
 }
 
 const Section: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = "" }) => (
@@ -30,7 +31,7 @@ const DefinitionCard: React.FC<{ term: string; def: string; icon: React.ReactNod
     </motion.div>
 );
 
-export const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
+export const LandingPage: React.FC<LandingPageProps> = ({ onStartGuided, onStartSandbox }) => {
     return (
         <div className="bg-background text-foreground overflow-x-hidden font-sans selection:bg-primary/30">
 
@@ -149,13 +150,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
                     AN ILLUSION.
                 </h2>
 
-                <button
-                    onClick={onStart}
-                    className="group relative inline-flex items-center justify-center px-16 py-8 text-2xl font-bold text-white transition-all duration-300 bg-primary rounded-full hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary shadow-[0_0_50px_-10px_rgba(124,58,237,0.5)] hover:shadow-[0_0_80px_-20px_rgba(124,58,237,0.7)] hover:scale-105"
-                >
-                    Initiate Simulation
-                    <ArrowRight className="ml-4 w-8 h-8 group-hover:translate-x-2 transition-transform" />
-                </button>
+                <div className="flex flex-col md:flex-row gap-6 mt-8">
+                    <button
+                        onClick={onStartGuided}
+                        className="group relative inline-flex items-center justify-center px-12 py-6 text-xl font-bold text-primary-foreground transition-all duration-300 bg-primary rounded-xl hover:bg-primary/90 shadow-[0_0_40px_-10px_rgba(124,58,237,0.5)] hover:shadow-[0_0_60px_-15px_rgba(124,58,237,0.7)] hover:-translate-y-1"
+                    >
+                        Guided Simulation
+                        <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-2 transition-transform" />
+                    </button>
+                    <button
+                        onClick={onStartSandbox}
+                        className="group relative inline-flex items-center justify-center px-12 py-6 text-xl font-bold text-foreground transition-all duration-300 bg-transparent border-2 border-primary/50 rounded-xl hover:bg-primary/10 hover:-translate-y-1"
+                    >
+                        Sandbox Mode
+                        <Activity className="ml-3 w-6 h-6 opacity-70 group-hover:opacity-100 transition-opacity" />
+                    </button>
+                </div>
             </Section>
 
             <footer className="py-12 text-center text-sm text-muted-foreground border-t border-white/5 bg-black/20 backdrop-blur-lg">
